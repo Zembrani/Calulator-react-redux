@@ -24,16 +24,48 @@ export default class Calculator extends Component {
     }
 
     doOperation = (operation) => {
-        console.log(operation)
+        if (this.state.current === 0 || operation !== this.state.operation) {
+            this.setState({operation, current: 1, clearDisplay: true})
+        } else {
+            this.equal();
+        }
     }
 
     equal = () => {
-        console.log('equal')
+        let values = [... this.state.values]
+        let result = 0;
+        switch (this.state.operation) {
+            case '+':
+                result = values[0] + values[1]
+                break;
+            case '-':
+                result = values[0] - values[1]
+                break;
+            case '*':
+                result = values[0] * values[1]
+                break;
+            case '/':
+                if (values[1] !== 0)
+                    result = values[0] / values[1]
+                break;
+            default:
+                break;
+        }
+        values = [result, this.state.values[1]]
+        this.setState({
+            displayValue: result,
+            current: 1,
+            clearDisplay: true,
+            values: values
+        })
     }
 
     sendDigits = (digit) => {
         if (digit === '.' && this.state.displayValue.includes('.')) {
             return
+        }
+        if (digit === '.' && this.state.displayValue === '0') {
+            digit = '0.'
         }
 
         const clearDisplay = this.state.displayValue === '0' || this.state.clearDisplay
